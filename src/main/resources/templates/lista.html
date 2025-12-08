@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sistema de Notificaciones Reactivo</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card-notification { transition: all 0.3s; }
+        .card-notification:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .fade-in { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="container py-5">
+
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5 text-primary">🔔 Notificaciones: <span th:text="${usuario}" class="fw-bold text-dark">Usuario</span></h1>
+        <p class="text-muted">Las notificaciones aparecerán aquí en tiempo real sin recargar la página.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-5">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">📨 Simular Nueva Notificación</h5>
+    </div>
+    <div class="card-body">
+        <form th:action="@{/notificaciones/crear}" th:object="${nuevaNotificacion}" method="post" class="row g-3 align-items-end">
+            <input type="hidden" name="usuario" th:value="${usuario}">
+
+            <div class="col-md-6">
+                <label class="form-label">Mensaje</label>
+                <input type="text" class="form-control" name="mensaje" placeholder="Ej: Pedido enviado..." required>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Prioridad</label>
+                <select class="form-select" name="tipo">
+                    <option value="INFO" selected>🔵 INFO</option>
+                    <option value="ALERTA">🟠 ALERTA</option>
+                    <option value="URGENTE">🔴 URGENTE</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Enviar Notificación</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mb-3">
+    <a th:href="@{'/notificaciones/' + ${usuario}}" class="btn btn-outline-secondary btn-sm">Ver Todas</a>
+    <a th:href="@{'/notificaciones/' + ${usuario} + '?tipo=INFO'}" class="btn btn-outline-info btn-sm">Solo Info</a>
+    <a th:href="@{'/notificaciones/' + ${usuario} + '?tipo=ALERTA'}" class="btn btn-outline-warning btn-sm">Solo Alertas</a>
+    <a th:href="@{'/notificaciones/' + ${usuario} + '?tipo=URGENTE'}" class="btn btn-outline-danger btn-sm">Solo Urgente</a>
+</div>
+
+<div class="table-responsive bg-white shadow-sm rounded">
+    <table class="table table-hover mb-0 align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>Estado</th>
+            <th>Tipo</th>
+            <th>Mensaje</th>
+            <th>Fecha</th>
+            <th class="text-end">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notif : ${listaNotificaciones}" class="fade-in">
+
+            <td class="text-center">
+                <span th:if="${notif.leido}" class="text-success fs-5">✓</span>
+                <span th:unless="${notif.leido}" class="text-secondary fs-5">•</span>
+            </td>
+
+            <td>
+                        <span th:text="${notif.tipo}"
+                              th:class="${'badge ' +
+                              (notif.tipo == 'URGENTE' ? 'bg-danger' :
+                              (notif.tipo == 'ALERTA' ? 'bg-warning text-dark' : 'bg-info text-dark'))}">
+                            TIPO
+                        </span>
+            </td>
+
+            <td>
+                        <span th:text="${notif.mensaje}"
+                              th:class="${notif.leido ? 'text-decoration-line-through text-muted' : 'fw-bold'}">
+                            Mensaje de prueba
+                        </span>
+            </td>
+
+            <td th:text="${#dates.format(notif.fecha, 'dd/MM HH:mm:ss')}" class="text-muted small">Fecha</td>
+
+            <td>
+                <div class="d-flex justify-content-end gap-2">
+                    <form th:if="${!notif.leido}" th:action="@{'/notificaciones/leer/' + ${notif.id}}" method="post">
+                        <input type="hidden" name="usuario" th:value="${usuario}">
+                        <button type="submit" class="btn btn-sm btn-outline-success" title="Marcar como leído">✓</button>
+                    </form>
+
+                    <form th:action="@{'/notificaciones/eliminar/' + ${notif.id}}" method="post">
+                        <input type="hidden" name="usuario" th:value="${usuario}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">🗑</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
