@@ -7,7 +7,7 @@ Este proyecto implementa un sistema de notificaciones en tiempo real utilizando 
 ##  Integrantes
 - María Díaz - Heredero López 152337
 - Cintia Santillán García 154184
-- Suren Hashemi Alam
+- Suren Hashemi Alam 155168
 ##  Tecnologías
 * **Java 21** & **Spring Boot 3.2**
 * **Spring WebFlux**: Para el manejo de flujos reactivos no bloqueantes.
