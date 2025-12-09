@@ -35,16 +35,16 @@ public class NotificacionController {
         model.addAttribute("listaNotificaciones", new ReactiveDataDriverContextVariable(flujo, 1));
 
         model.addAttribute("usuario", usuario);
-        model.addAttribute("nuevaNotificacion", new Notificacion()); // Para el formulario vacío
+        model.addAttribute("nuevaNotificacion", new Notificacion()); 
 
-        return "lista"; // Esto buscará el archivo lista.html en templates
+        return "lista";
     }
 
 
     @PostMapping("/crear")
     public Mono<String> crearNotificacion(@ModelAttribute Notificacion notificacion) {
         return service.addNotificacion(notificacion)
-                // Al terminar, redirigimos a la página del usuario para ver el cambio
+                
                 .thenReturn("redirect:/notificaciones/" + notificacion.getUsuario());
     }
 
