@@ -16,11 +16,11 @@ public class Notificacion {
 
     private String usuario;
     private String mensaje;
-    private String tipo; // "INFO", "ALERTA", "URGENTE"
-    private Date fecha = new Date(); // Fecha actual por defecto
-    private Boolean leido = false;   // No leído por defecto
+    private String tipo; 
+    private Date fecha = new Date(); 
+    private Boolean leido = false;   
 
-    // Constructor conveniente para crear notificaciones rápido
+ 
     public Notificacion(String usuario, String mensaje, String tipo) {
         this.usuario = usuario;
         this.mensaje = mensaje;
