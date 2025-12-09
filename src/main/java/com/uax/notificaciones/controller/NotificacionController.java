@@ -23,7 +23,7 @@ public class NotificacionController {
                                     @RequestParam(required = false) String tipo,
                                     Model model) {
 
-        // Decidimos qué flujo mostrar (filtrado o todos)
+    
         Flux<Notificacion> flujo;
         if (tipo != null && !tipo.isEmpty()) {
             flujo = service.filtrarPorTipo(usuario, tipo);
@@ -31,9 +31,7 @@ public class NotificacionController {
             flujo = service.getNotificacionesEnTiempoReal(usuario);
         }
 
-        // EL TRUCO DEL 10: ReactiveDataDriverContextVariable
-        // Esto le dice a Thymeleaf: "No esperes a tener todos los datos.
-        // Pinta la página y mantén la conexión abierta. Cada vez que llegue 1 dato nuevo, empújalo al HTML".
+       
         model.addAttribute("listaNotificaciones", new ReactiveDataDriverContextVariable(flujo, 1));
 
         model.addAttribute("usuario", usuario);
