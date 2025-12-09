@@ -17,10 +17,7 @@ public class NotificacionController {
     @Autowired
     private NotificacionService service;
 
-    /**
-     * VISTA PRINCIPAL: Carga la página HTML.
-     * Aquí usamos 'ReactiveDataDriverContextVariable' para activar el modo SSE de Thymeleaf.
-     */
+   
     @GetMapping("/{usuario}")
     public String verNotificaciones(@PathVariable String usuario,
                                     @RequestParam(required = false) String tipo,
@@ -45,7 +42,6 @@ public class NotificacionController {
         return "lista"; // Esto buscará el archivo lista.html en templates
     }
 
-    // --- ENDPOINTS PARA OPERACIONES (CRUD) ---
 
     @PostMapping("/crear")
     public Mono<String> crearNotificacion(@ModelAttribute Notificacion notificacion) {
