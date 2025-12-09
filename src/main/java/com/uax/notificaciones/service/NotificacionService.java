@@ -14,15 +14,9 @@ public class NotificacionService {
     @Autowired
     private NotificacionRepository repository;
 
-    // 📡 ESTA ES LA CLAVE DEL TIEMPO REAL:
-    // Un 'Sink' actúa como un canal de radio. Nosotros emitimos datos por aquí
-    // y todos los navegadores conectados ("suscriptores") reciben el dato al instante.
-    // .multicast() permite que haya múltiples pestañas escuchando a la vez.
+   
     private final Sinks.Many<Notificacion> sink = Sinks.many().multicast().onBackpressureBuffer();
 
-    /**
-     * Guarda la notificación en Mongo Y TAMBIÉN la emite al canal en vivo.
-     */
     public Mono<Notificacion> addNotificacion(Notificacion n) {
         return repository.save(n)
                 .doOnSuccess(saved -> {
@@ -31,20 +25,16 @@ public class NotificacionService {
                 });
     }
 
-    /**
-     * Devuelve un flujo infinito que mezcla:
-     * 1. El historial guardado en BD (Cold Stream).
-     * 2. Las nuevas notificaciones que lleguen al Sink en vivo (Hot Stream).
-     */
+   
     public Flux<Notificacion> getNotificacionesEnTiempoReal(String usuario) {
-        // 1. Recuperar historial de la BD
+   
         Flux<Notificacion> historico = repository.findByUsuario(usuario);
 
-        // 2. Escuchar el canal en vivo y filtrar solo las de este usuario
+    
         Flux<Notificacion> enVivo = sink.asFlux()
                 .filter(n -> n.getUsuario().equals(usuario));
 
-        // 3. Fusionar ambos mundos
+       
         return Flux.concat(historico, enVivo);
     }
 
