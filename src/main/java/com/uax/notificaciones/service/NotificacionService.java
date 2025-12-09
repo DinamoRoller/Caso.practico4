@@ -20,7 +20,7 @@ public class NotificacionService {
     public Mono<Notificacion> addNotificacion(Notificacion n) {
         return repository.save(n)
                 .doOnSuccess(saved -> {
-                    // Empujamos la notificación al "canal de radio" (Sink)
+                   
                     sink.tryEmitNext(saved);
                 });
     }
